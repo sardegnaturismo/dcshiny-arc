@@ -1,23 +1,23 @@
-## SHINYDASHBOARD
+# SHINYDASHBOARD
 
-### Obiettivo
+## Obiettivo
 Realizzare una dashboard di distribuzione dei contenuti (dati su file csv) elaborati mediante shiny ed erogati   mediante l'uso dell'application server shiny-server.
 
-### Descrizione servizio
+## Descrizione servizio
 L'erogazione è organizzata in 3 elementi (docker container):
 1. Frontend proxy (modulo nginx)   
 2. Application server (modulo shiny-server)
 3. File Sync Worker (modulo worker)
 
-## 1. Frontend proxy (modulo nginx)
+### 1. Frontend proxy (modulo nginx)
 Implementa il servizio di http proxy verso l'application server (di seguito), link di upstream: http://shiny-server:3838
 Implementa inoltre l'inject di codice javascript sostituendo il tag html '</head>' nelle risposte.
 
-## 2. Application server (modulo shiny-server)
+### 2. Application server (modulo shiny-server)
 Eroga shiny-server eseguendo la build del container a partire da ubuntu:16.04 
 Il codice dell'applicazione Shiny-server viene copiato all'interno del container, i dati (file csv) vengono caricati all'avvio del servizio dal volume EFS connesso al Cluster ECS.
 
-## 3. File Sync Worker (modulo worker)
+### 3. File Sync Worker (modulo worker)
 I file csv usati come orgine per la dashboard vengono processati e caricati su S3://datalake.sardegnaturismocloud.it/prod/dashboard_operatore/source_files/ (estensione .csv).
 L'infrastruttura esegue la copia dei file da s3 al mountpoint per il cluster ECS di destinazione in tre passaggi:
 1. L'evento "ObjectCreate (All)" configurato per il path sul bucket S3 genera un messaggio ad ogni nuovo caricamento con i riferimenti dell'oggetto creato (include il filename). 
