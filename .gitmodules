@@ -1,0 +1,3 @@
+[submodule "Docker/shiny-server/DO_shiny"]
+	path = Docker/shiny-server/DO_shiny
+	url = https://github.com/pjpalla/DO_shiny.git

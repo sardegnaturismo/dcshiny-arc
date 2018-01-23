@@ -1,0 +1,81 @@
+
+SQS_QUEUE_NAME = APP_NAME + 'Queue'
+ECS_TASK_NAME = APP_NAME + 'Task'
+AWS_CONFIG_FILE_NAME = os.environ['HOME'] + '/.aws/config'
+
+AWS_CLI_STANDARD_OPTIONS = (
+    '    --region ' + AWS_REGION +
+    '    --profile ' + AWS_PROFILE +
+    '    --output json'
+)
+
+LAMBDA_EXECUTION_ROLE_POLICY = {
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "logs:*",
+                "sqs:SendMessage",
+                "ecs:RunTask"
+            ],
+            "Resource": [
+                "arn:aws:logs:*:*:*",
+                "arn:aws:sqs:*:*:*",
+                "arn:aws:ecs:*:*:*"
+            ]
+        }
+    ]
+}
+
+
+LAMBDA_FUNCTION_CONFIG = {
+    "s3_key_suffix_whitelist": ['.zip'],  # Only S3 keys with this URL will be accepted.
+    "queue": '',  # To be filled in with the queue ARN.
+    "task": ECS_TASK_NAME
+}
+
+LAMBDA_FUNCTION_CONFIG_PATH = './' + LAMBDA_FUNCTION_NAME + '/config.json'
+
+BUCKET_NOTIFICATION_CONFIGURATION = {
+    "LambdaFunctionConfigurations": [
+        {
+            "Id": APP_NAME,
+            "LambdaFunctionArn": "",
+            "Events": [
+                "s3:ObjectCreated:*"
+            ]
+        }
+    ]
+}
+
+
+ECS_ROLE_BUCKET_ACCESS_POLICY = {
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:ListAllMyBuckets"
+            ],
+            "Resource": "arn:aws:s3:::*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:ListBucket",
+                "s3:GetBucketLocation"
+            ],
+            "Resource": ""  # To be filled in by a function below.
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:PutObject",
+                "s3:GetObject",
+                "s3:DeleteObject"
+            ],
+            "Resource": ""  # To be filled in by a function below.
+        }
+    ]
+}
