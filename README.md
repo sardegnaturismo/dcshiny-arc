@@ -1,4 +1,5 @@
 ## SHINYDASHBOARD
+
 ### Obiettivo
 Realizzare una dashboard di distribuzione dei contenuti (dati su file csv) elaborati mediante shiny ed erogati   mediante l'uso dell'application server shiny-server.
 
