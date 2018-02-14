@@ -1,0 +1,49 @@
+
+
+92c48a800ad929be3197620c879ef82169cc52fc
+
+
+# data.template_file.codebuild_source_location.rendered
+data "template_file" "codebuild_source_location" {
+  template = "https://github.com/$${owner}/$${repository}.git"
+
+  vars {
+    owner      = "${var.github_owner}"
+    repository = "${var.github_repository}"
+  }
+}
+
+
+
+resource "aws_codebuild_project" "_" {
+  count = "${length(var.codebuild_project) == 0 ? 1 : 0}"
+
+  name = "${var.github_repository}"
+
+  build_timeout = "5"
+  service_role  = "${aws_iam_role.codebuild.arn}"
+
+  source {
+    type     = "GITHUB"
+    location = "${data.template_file.codebuild_source_location.rendered}"
+
+    auth {
+      type     = "OAUTH"
+      resource = "${var.github_oauth_token}"
+    }
+  }
+
+  environment {
+    compute_type = "${var.codebuild_compute_type}"
+    type         = "LINUX_CONTAINER"
+    image        = "${var.codebuild_image}"
+  }
+
+  artifacts {
+    type           = "S3"
+    location       = "${aws_s3_bucket._.bucket}"
+    name           = "${var.github_repository}"
+    namespace_type = "BUILD_ID"
+    packaging      = "ZIP"
+  }
+}
