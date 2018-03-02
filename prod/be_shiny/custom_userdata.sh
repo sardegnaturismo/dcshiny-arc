@@ -1,3 +1,6 @@
+--==BOUNDARY==
+Content-Type: text/text/x-shellscript; charset="us-ascii"
+
 # Install nfs-utils
 yum_update yum update -y
 yum install -y nfs-utils

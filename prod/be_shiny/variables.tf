@@ -32,7 +32,7 @@ variable "instance_type" {
   type = "string"
 
   # default = "c4.large"
-  default = "t2.medium"
+  default = "t2.large"
 }
 
 # variable "vpc_cidr" {

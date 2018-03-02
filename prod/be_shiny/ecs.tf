@@ -23,7 +23,7 @@ module "ecs" {
 
   instance_type         = "${var.instance_type}"
   ecs_aws_ami           = "${var.ecs_aws_ami}"
-  alb_security_group_id = "${data.terraform_remote_state.common.ec2_fe_main_sg}"
+  alb_security_group_ids = ["${data.terraform_remote_state.common.ec2_fe_main_sg}","sg-e9867d92"]
   custom_userdata       = "${data.template_file.custom_userdata.rendered}"
 
   # data_persistency_storage = "ebs"
