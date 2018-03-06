@@ -1,8 +1,10 @@
 --==BOUNDARY==
 Content-Type: text/text/x-shellscript; charset="us-ascii"
 
+#!/bin/bash
+
 # Install nfs-utils
-yum_update yum update -y
+yum update -y
 yum install -y nfs-utils
 
 # Create /efs folder
