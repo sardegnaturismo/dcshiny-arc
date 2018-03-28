@@ -56,7 +56,7 @@ cat << EOF > /opt/consul/config/consul-agent.json
 {
   "advertise_addr": "$EC2_INSTANCE_IP_ADDRESS",
   "client_addr": "0.0.0.0",
-  "node_name": "${EC2_INSTANCE_ID}",
+  "node_name": "$EC2_INSTANCE_ID",
   "datacenter": "$REGION",
   "retry_join": ["provider=aws region=$REGION tag_key=consul-servers tag_value=auto-join"]
 }
