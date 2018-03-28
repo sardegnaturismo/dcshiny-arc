@@ -23,6 +23,8 @@ resource "aws_ecs_task_definition" "worker" {
     "essential": true,
     "image": "${aws_ecr_repository.default.repository_url}:worker",
     "memory": 128,
+    "dnsServers": ["172.17.0.1"],
+    "dnsSearchDomain": ["service.consul"],
     "memoryReservation": 64,
     "name": "worker",
     "logConfiguration": {

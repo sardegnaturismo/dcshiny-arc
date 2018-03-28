@@ -28,6 +28,8 @@ resource "aws_ecs_task_definition" "default" {
     ],
     "image": "${aws_ecr_repository.default.repository_url}:nginx",
     "memory": 128,
+    "dnsServers": ["172.17.0.1"],
+    "dnsSearchDomain": ["service.consul"],
     "memoryReservation": 64,
     "name": "nginx",
     "logConfiguration": {
@@ -45,7 +47,9 @@ resource "aws_ecs_task_definition" "default" {
     "name": "shiny-server",
     "image": "${aws_ecr_repository.default.repository_url}:shiny-server",
     "essential": true,
-    "memory": 1500,
+    "memory": 500,
+    "dnsServers": ["172.17.0.1"],
+    "dnsSearchDomain": ["service.consul"],
     "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
