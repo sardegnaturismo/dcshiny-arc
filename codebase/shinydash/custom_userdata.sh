@@ -1,25 +1,6 @@
 --==BOUNDARY==
 Content-Type: text/text/x-shellscript; charset="us-ascii"
 
-# Install nfs-utils
-yum_update yum update -y
-yum install -y nfs-utils
-
-# Create /efs folder
-mkdir /efs
-
-# Mount /efs
-echo -e "${efs_id}.efs.${region}.amazonaws.com:/ /efs nfs4 nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2 0 0" >> /etc/fstab
-mount -a
-
-# # Install ssm agent
-# cd /tmp
-# sudo yum install -y https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_amd64/amazon-ssm-agent.rpm
-# sudo start amazon-ssm-agent
-
---==BOUNDARY==
-Content-Type: text/text/x-shellscript; charset="us-ascii"
-
 #!/bin/bash
 
 #
@@ -62,6 +43,7 @@ cat << EOF > /opt/consul/config/consul-agent.json
 }
 EOF
 
+
 --==BOUNDARY==
 Content-Type: text/text/upstart-job; charset="us-ascii"
 
@@ -79,10 +61,31 @@ script
     sleep 1
   done
 
-  instance_arn=$(curl -s http://localhost:51678/v1/metadata | jq -r '. | .ContainerInstanceArn' | awk -vim F/ '{print $NF}' )
+  instance_arn=$(curl -s http://localhost:51678/v1/metadata | jq -r '. | .ContainerInstanceArn' | awk -F/ '{print $NF}' )
   cluster=$(curl -s http://localhost:51678/v1/metadata | jq -r '. | .Cluster' | awk -F/ '{print $NF}' )
   region=$(curl -s http://localhost:51678/v1/metadata | jq -r '. | .ContainerInstanceArn' | awk -F: '{print $4}')
-
   aws ecs start-task --cluster $cluster --task-definition consul-agent --container-instances $instance_arn --started-by $instance_arn --region $region
   aws ecs start-task --cluster $cluster --task-definition consul-registrator --container-instances $instance_arn --started-by $instance_arn --region $region
 end script
+
+--==BOUNDARY==
+Content-Type: text/text/x-shellscript; charset="us-ascii"
+
+#!/bin/bash
+
+# Install nfs-utils
+yum update -y
+yum install -y nfs-utils
+
+# Create /efs folder
+mkdir /efs
+
+# Mount /efs
+echo -e "${efs_id}.efs.${region}.amazonaws.com:/ /efs nfs4 nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2 0 0" >> /etc/fstab
+mount -a
+
+# # Install ssm agent
+# cd /tmp
+# sudo yum install -y https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_amd64/amazon-ssm-agent.rpm
+# sudo start amazon-ssm-agent
+
