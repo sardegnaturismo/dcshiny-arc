@@ -86,17 +86,15 @@ data "aws_acm_certificate" "frontend" {
   statuses = ["ISSUED"]
 }
 
-# resource "aws_alb_listener" "https" {
-#   load_balancer_arn = "${aws_alb.default.id}"
-#   port              = 443
-#   protocol          = "HTTPS"
-#   ssl_policy        = "ELBSecurityPolicy-2016-08"
-#   certificate_arn   = "${data.aws_acm_certificate.frontend.arn}"
+resource "aws_alb_listener" "https" {
+  load_balancer_arn = "${aws_alb.default.id}"
+  port              = 443
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = "${data.aws_acm_certificate.frontend.arn}"
 
-
-#   default_action = {
-#     target_group_arn = "${data.terraform_remote_state.be_phab.target_group_arn}"
-#     type             = "forward"
-#   }
-# }
-
+  default_action = {
+    target_group_arn = "${data.terraform_remote_state.shinydash.main_tg_arn}"
+    type             = "forward"
+  }
+}
