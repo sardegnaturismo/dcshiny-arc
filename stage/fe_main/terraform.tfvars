@@ -25,7 +25,7 @@ terragrunt = {
 
 # UNCOMMENT to activate
 dependencies {
-  paths = ["../common", "../cluster", "../DO", "../DC"]
+  paths = ["../common", "../cluster"]
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

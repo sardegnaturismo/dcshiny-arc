@@ -40,13 +40,13 @@ github_repository = "DC_shiny"
 
 poll_for_source_changes = "true"
 
-dashboard_id = "DO"
+dashboard_id = "dc"
 
 shiny_image_tag = "shiny-server"
 
 enable_s3_sync_worker = true
 
-alb_listener_rule_offset = 10
+alb_listener_rule_offset = 50
 
 http_listener_arn = "arn:aws:elasticloadbalancing:eu-west-1:064484720015:listener/app/prod-ras-alb/9d406f2dafd60ac2/1f2730a897383305"
 
