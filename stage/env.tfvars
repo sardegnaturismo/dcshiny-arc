@@ -12,7 +12,7 @@ profile = "wellnet-ras-turismo"
 
 project = "shinydash"
 
-project_full_name = "shiny"
+project_full_name = "shinydash"
 
 key_name = "ras-stage"
 

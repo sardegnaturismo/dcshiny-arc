@@ -9,7 +9,7 @@ terragrunt = {
 
   # Replace MODULE_REPOSITORY_NAME with the name of git repo containing the iac modules. Ends with "//" and module name (= name of containing folder)  
   terraform {
-    source = "git::ssh://git@bitbucket.org/beetobit/wel-mirror-dashboard-modules//shinydash"
+    source = "git::ssh://git@bitbucket.org/beetobit/wel-mirror-dashboard-modules//dashboard"
   }
 
   # Include all settings from the root terraform.tfvars file
@@ -23,11 +23,11 @@ terragrunt = {
 # These are the modules to create before this
 # Used by `terragrunt plan-all` and `terragrunt apply-all` commands  ---------------------------------------------------------------------------------------------------------------------
 
-# UNCOMMENT to activate
-# dependencies {
-#   paths = ["../common"]
-# }
 
+# UNCOMMENT to activate
+dependencies {
+  paths = ["../common", "../cluster"]
+}
 # ---------------------------------------------------------------------------------------------------------------------
 # MODULE PARAMETERS
 # These are the variables we have to pass in to use the module specified in the terragrunt configuration above
@@ -49,5 +49,7 @@ enable_s3_sync_worker = true
 alb_listener_rule_offset = 10
 
 http_listener_arn = "arn:aws:elasticloadbalancing:eu-west-1:064484720015:listener/app/prod-ras-alb/9d406f2dafd60ac2/1f2730a897383305"
+
 https_listener_arn = "arn:aws:elasticloadbalancing:eu-west-1:064484720015:listener/app/prod-ras-alb/9d406f2dafd60ac2/952cde701e658d7a"
+
 service_count = 2

@@ -9,7 +9,7 @@ terragrunt = {
 
   # Replace MODULE_REPOSITORY_NAME with the name of git repo containing the iac modules. Ends with "//" and module name (= name of containing folder)  
   terraform {
-    source = "git::ssh://git@bitbucket.org/beetobit/wel-mirror-dashboard-modules//shinydash"
+    source = "git::ssh://git@bitbucket.org/beetobit/wel-mirror-dashboard-modules//dashboard"
   }
 
   # Include all settings from the root terraform.tfvars file
@@ -25,7 +25,7 @@ terragrunt = {
 
 # UNCOMMENT to activate
 dependencies {
-  paths = ["../common"]
+  paths = ["../common", "../cluster"]
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

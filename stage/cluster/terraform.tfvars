@@ -9,7 +9,7 @@ terragrunt = {
 
   # Replace MODULE_REPOSITORY_NAME with the name of git repo containing the iac modules. Ends with "//" and module name (= name of containing folder)  
   terraform {
-    source = "git::ssh://git@bitbucket.org/beetobit/wel-mirror-dashboard-modules//fe_main"
+    source = "git::ssh://git@bitbucket.org/beetobit/wel-mirror-dashboard-modules//cluster"
   }
 
   # Include all settings from the root terraform.tfvars file
@@ -25,7 +25,7 @@ terragrunt = {
 
 # UNCOMMENT to activate
 dependencies {
-  paths = ["../common", "../cluster", "../DO", "../DC"]
+  paths = ["../common"]
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -33,6 +33,24 @@ dependencies {
 # These are the variables we have to pass in to use the module specified in the terragrunt configuration above
 # ---------------------------------------------------------------------------------------------------------------------
 
+github_oauth_token = "92c48a800ad929be3197620c879ef82169cc52fc"
 
-# ie. cidr_blocks = ["172.31.16.0/20", "172.31.0.0/20", "172.31.32.0/20"]
+github_owner = "sardegnaturismo"
 
+github_repository = "DO_shiny"
+
+poll_for_source_changes = "true"
+
+dashboard_id = "DO"
+
+shiny_image_tag = "shiny-server"
+
+enable_s3_sync_worker = true
+
+alb_listener_rule_offset = 10
+
+http_listener_arn = "arn:aws:elasticloadbalancing:eu-west-1:064484720015:listener/app/prod-ras-alb/9d406f2dafd60ac2/1f2730a897383305"
+
+https_listener_arn = "arn:aws:elasticloadbalancing:eu-west-1:064484720015:listener/app/prod-ras-alb/9d406f2dafd60ac2/952cde701e658d7a"
+
+service_count = 2
