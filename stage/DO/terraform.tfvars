@@ -53,4 +53,4 @@ http_listener_arn = "arn:aws:elasticloadbalancing:eu-west-1:064484720015:listene
 
 https_listener_arn = "arn:aws:elasticloadbalancing:eu-west-1:064484720015:listener/app/prod-ras-alb/9d406f2dafd60ac2/952cde701e658d7a"
 
-service_count = 2
+service_count = 0

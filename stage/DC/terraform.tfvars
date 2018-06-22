@@ -23,11 +23,11 @@ terragrunt = {
 # These are the modules to create before this
 # Used by `terragrunt plan-all` and `terragrunt apply-all` commands  ---------------------------------------------------------------------------------------------------------------------
 
-
 # UNCOMMENT to activate
 dependencies {
   paths = ["../common", "../cluster"]
 }
+
 # ---------------------------------------------------------------------------------------------------------------------
 # MODULE PARAMETERS
 # These are the variables we have to pass in to use the module specified in the terragrunt configuration above
@@ -52,4 +52,4 @@ http_listener_arn = "arn:aws:elasticloadbalancing:eu-west-1:064484720015:listene
 
 https_listener_arn = "arn:aws:elasticloadbalancing:eu-west-1:064484720015:listener/app/prod-ras-alb/9d406f2dafd60ac2/952cde701e658d7a"
 
-service_count = 2
+service_count = 1
