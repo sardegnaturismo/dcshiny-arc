@@ -1,97 +1,109 @@
-# SHINYDASHBOARD
+# Planning block 
 
-## Obiettivo
-Realizzare una dashboard di distribuzione dei contenuti (dati su file csv) elaborati mediante shiny ed erogati   mediante l'uso dell'application server shiny-server.
+Go to working directory:
+`cd <live working dir>/<environment>/<block>`
 
-## Descrizione servizio
-L'erogazione è organizzata in 3 elementi (docker container):
-1. Frontend proxy (modulo nginx)   
-2. Application server (modulo shiny-server)
-3. File Sync Worker (modulo worker)
-
-### 1. Frontend proxy (modulo nginx)
-Implementa il servizio di http proxy verso l'application server (di seguito), link di upstream: http://shiny-server:3838
-Implementa inoltre l'inject di codice javascript sostituendo il tag html '</head>' nelle risposte.
-
-### 2. Application server (modulo shiny-server)
-Eroga shiny-server eseguendo la build del container a partire da ubuntu:16.04 
-Il codice dell'applicazione Shiny-server viene copiato all'interno del container, i dati (file csv) vengono caricati all'avvio del servizio dal volume EFS connesso al Cluster ECS.
-
-### 3. File Sync Worker (modulo worker)
-I file csv usati come orgine per la dashboard vengono processati e caricati su S3://datalake.sardegnaturismocloud.it/prod/dashboard_operatore/source_files/ (estensione .csv).
-L'infrastruttura esegue la copia dei file da s3 al mountpoint per il cluster ECS di destinazione in tre passaggi:
-1. L'evento "ObjectCreate (All)" configurato per il path sul bucket S3 genera un messaggio ad ogni nuovo caricamento con i riferimenti dell'oggetto creato (include il filename). 
-2. Il messaggio viene caricato sulla coda SQS dedicata {ambiente}-shinydash-worker
-3. Lo script bash caricato sul modulo worker verifica periodicamente la presenza di nuovi messaggi sulla coda. Ad ogni nuovo caricamento sul bucket il primo worker che legge il messaggio lo prende in carico, esegue la copia sul volume EFS connesso al cluster ECS e lo segna come completato (eliminandolo dalla coda).
-L'implementazione garantisce l'isolamento, l'alta affidabilità e la scalabilità delle risorse (è sufficiente incrementare il numero di moduli worker per aumentare i processi simultanei di copia da S3 a EFS)  
-
-## Continous Delivery
-L'implementazione di nuove funzionalità, la correzione di bug sull'infrastruttura (aws e definizione container) o l'aggiornamento del codice shiny-server può procedere con workflow di rilascio continuo sfruttando ambienti multipli (test/dev, stage e prod).
-Segue descrizione per ognuno.
-
-### Test/Dev 
-È implementato con l'uso di docker-compose (avvia solo proxy e application server) su cui vanno però caricati i dati di test.
-
-### Stage
-È identico a "Prod" ad esclusione del numero di istanze ridotte per il cluster ECS (1 invece di 2) e del processo di caricamento dei file csv semplificato (caricamento simultaneo post-build)
-L'ambiente è compatibile con i meccanismi di ottimizzazione delle risorse per l'on/off programmato o a richiesta (via API)
-
-### Prod
-Esegue tutti i moduli in alta affidabilità (service ridondati)
+Terragrunt plan will pickup latest model revision from the git repository configured on terraform.tfvars within the block directory. It will then initialize terraform environment and show desired infrastructures changes.
+Run `terragrunt plan` to start planning. Run with `--terragrunt-source-update`to force sources update to latest available revision.
 
 
-## Build e push manuale delle immagini
-Per aggiornare manualmente le immagini dei container sui registri ECR per gli ambienti stage e prod sono disponibili gli script bash di seguito illustrati. 
+## Local testing, iterating
 
-Es. Esecuzione su istanza EC2 dedicata al build "docker-factory" su account RAS: 
-```
-# Build e push <ambiente> = stage | prod 
-git clone <this git repo url>
-cd Docker
-sh update.sh # application code update)
-sh build.sh -e <ambiente> #  build/tag/push to ecr registry
-```
+When testing local version of model (aka *module*) You need to set specific flags to inform terragrunt of the source relative path pointing to the git local working directory.
 
+Assuming your home dir contains "live" and "modules" repositories:
 
+~
+ |- live
+ |- modules
 
-## Infrastruttura di riferimento per ECS
+To plan infrastructure enter live directory, environment, block:
 
+`cd <live working dir>/<environment>/<block>`
 
-Include i moduli:
-1. ECS Cluster
-2. Service
-3. Load Balancer 
-4. DeploymentPipeline
-5. Definizione dei container
-6. Codifica delle risorse infrastrutturali
+i.e. `cd live/prod/common`
 
-1. ECS Cluster
-Insieme di 1 o più EC2 istanze che eseguono Amazon ECS-optimized AMI. Il cluster condivide i dati tra le istanze usando un mountpoint EFS (Elastic File System)  nfsv4.
+Run terragrunt plan specifying the relative path to reach module sources for the block:  
 
-2. Service
-È la definizione del task (composizione di docker e configurazioni del contesto) unito alle impostazioni di esecuzione del service sul cluster ECS (numero, IAM role ECR registry). Il service è usato come template per i processi di continous delivery
+`terragrunt plan --terragrunt-source ../../../modules/<block>`
 
-3. Load Balancer
-L'Application Load Balancer (ALB) usato per ricever il traffico convogliato verso il servizio (attivo sull'ECS Cluster). In caso di ALB condiviso tra gli ambienti o i progetti, il setup prevede sempre il Target Group afferente al servizio.
+i.e. `terragrunt plan --terragrunt-source ../../../modules/common`
 
-4. DeploymentPipeline
-Elenco degli step e delle risorse che compongono il processo di rilascio degli aggiornamenti periodici di codice applicativo per il servizio.
-Include un progetto CodeBuild che costruisce l'immagine del container a partire dal codice sul repo git, il rilascio sul cluster ECS, la sequenza CodePipeline che esegue step-by-step i passaggi, un bucket S3 per la memorizzazione dei file temporanei e tutti i role IAM necessari per l'accesso alle risorse coinvolte.
+Run with `--terragrunt-source-update`to force sources update to latest available revision.
 
-5. Definizione dei container
-Raccolta dei file di configurazione dei container (Dockerfile) e dei servizi erogati. Include un file bash per il build dei container e l'upload delle immagini generate suil servizio ECR del cluster ECS di destinazione.
-Il file buildspec.yml (specifico per ogni container) definisce la sequenza di build e push su ECR ad uso del progetto CodeBuild relativo
-
-6. Codifica delle risorse infrastrutturali
-Tutte le risorse necessarie all'erogazione del servizio sono state configurate usando Terraform come strumento di provisioning
+# Planning all infrastructure block at once
 
 
-## Nomenclatura Generale
+Terragrunt `plan-all` will pickup latest revision of each infrastructure block, then initialize terraform environment and show desired infrastructures changes.
+Change to `live` working directory
+`cd live` 
 
-{ambiente}-{progetto}-{funzione}-{servizio}
+Run `terragrunt plan-all` to start planning. Run with `--terragrunt-source-update`to force sources update to latest available revision from the associated git repository.
 
-ambiente = dev | stage | prod
-progetto = nome sintetico che richiama il progetto di riferimento
-funzione = ruolo o componente all'interno del progetto
-servizio = sigla relativa al servizio AWS impiegato
+## Local testing, iterating
+
+Set source relative path to the git local working directory for module.
+
+Assuming your home dir contains "live" and "modules" repositories:
+
+~
+ |- live
+ |- modules
+
+To plan-all infrastructure at once enter live directory, environment:
+
+`cd <live working dir>/<environment>`
+
+i.e. `cd live/prod`
+
+Run terragrunt plan-all and set the relative path to the module sources :  
+
+`terragrunt plan-all --terragrunt-source ../../../modules`
+
+Run with `--terragrunt-source-update`to force sources update to latest available revision.
+
+# Applying 
+
+## Single block - latest revision from git module repository  ( branch master)
+Enter live directory, environment, block:
+
+`cd <live working dir>/<environment>/<block>`
+
+i.e. `cd live/prod/common`
+
+Run `terragrunt apply`
+
+## Single block - Local testing, iterating
+Enter live directory, environment, block:
+
+`cd <live working dir>/<environment>/<block>`
+
+i.e. `cd live/prod/common`
+
+Run `terragrunt apply --terragrunt-source ../../../modules/<block>`
+
+i.e. `terragrunt apply --terragrunt-source ../../../modules/common`
+
+Run with `--terragrunt-source-update`to force sources update to latest available revision.
+
+## All blocks at once - latest revision from git module repository  ( branch master)
+
+Enter live directory, environment, block:
+
+
+`cd <live working dir>/<environment>/<block>`
+
+i.e. `cd live/prod/common`
+
+Run `terragrunt apply-all`. Run with `--terragrunt-source-update`to force sources update to latest available revision.
+
+## All blocks at once - Local testing, iterating
+Enter live directory, environment:
+
+`cd <live working dir>/<environment>`
+
+i.e. `cd live/prod`
+
+Run `terragrunt apply-all --terragrunt-source ../../../modules`
+Run with `--terragrunt-source-update` flag to force sources update to the latest available revision.
 
