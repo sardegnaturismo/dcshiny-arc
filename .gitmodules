@@ -1,0 +1,3 @@
+[submodule "Docker/dc-shiny-server"]
+	path = Docker/dc-shiny-server
+	url = git@github.com:sardegnaturismo/DC_shiny.git
