@@ -42,7 +42,11 @@ poll_for_source_changes = "true"
 
 dashboard_id = "dc"
 
-shiny_image_tag = "shiny-server"
+shiny_image_tag = "dc-shiny-server"
+
+nginx_image_tag = "dc-nginx"
+
+worker_image_tag = "dc-worker"
 
 enable_s3_sync_worker = true
 
