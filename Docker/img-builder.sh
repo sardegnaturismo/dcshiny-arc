@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CONFIG_FILENAME="default.config"
+CONFIG_FILENAME="prod.config"
 
 if [ ! -f ${CONFIG_FILENAME}  ]; then
     echo "Config file not found, exiting ..."
