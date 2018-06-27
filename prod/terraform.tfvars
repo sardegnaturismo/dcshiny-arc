@@ -7,7 +7,7 @@ terragrunt = {
 
     config {
       encrypt = false
-      bucket  = "prod-ras-archivio-tf"
+      bucket  = "rt-064484720015-prod-shiny-tf"
       key     = "${path_relative_to_include()}/terraform.tfstate"
       region  = "${get_env("TF_VAR_region", "eu-west-1")}"
       profile = "wellnet-ras-turismo"
