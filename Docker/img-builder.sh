@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash 
 
 CONFIG_FILENAME="prod.config"
 
@@ -31,12 +31,13 @@ fi
 function Usage()
 {
 
-echo "Usage: `baseIMAGE_TAG $0` options (-d)"
+echo "Usage: `imd-builder $0` options (-d)"
 echo 
 echo "-r : repository URI"
 echo "-t : container IMAGE_TAG"
 echo "-d : container DOCKER_ROOT"
 echo "-v : version"
+echo "-c : clear build cache before building"
 echo "-h : help"
 echo
 
@@ -45,11 +46,11 @@ exit;
 
 function Version()
 {
-  echo "`base IMAGE_TAG $0` versione $VERSION"
+  echo "`base IMAGE_TAG $0` version $VERSION"
   exit;
 }
 
-while getopts "r:t:d:vh" Option
+while getopts "r:t:d:cvh" Option
 do
   case $Option in
    r )
@@ -60,6 +61,9 @@ do
        ;;
    d )
        DOCKER_ROOT=$OPTARG
+       ;;
+   c )
+       NO_CACHE="--no-cache"
        ;;
    v )
        Version
@@ -109,7 +113,7 @@ fi
 
 aws ecr get-login --no-include-email --region ${AWS_REGION} --profile ${AWS_PROFILE}| sh
 
-echo "docker build -t ${IMAGE_TAG}:${IMAGE_TAG} ${DOCKER_ROOT}"
+echo "docker build ${NO_CACHE} -t ${IMAGE_TAG}:${IMAGE_TAG} ${DOCKER_ROOT}"
 
 docker build -t ${IMAGE_TAG}:${IMAGE_TAG} ${DOCKER_ROOT}
 

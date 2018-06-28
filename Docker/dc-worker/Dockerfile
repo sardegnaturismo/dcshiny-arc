@@ -10,5 +10,5 @@ RUN \
 WORKDIR /aws
 ADD ecs-worker.sh /
 RUN chmod +x /ecs-worker.sh
-CMD ["sh /ecs-worker.sh"]
+CMD ["sh","/ecs-worker.sh"]
 # ENTRYPOINT ["aws"]
