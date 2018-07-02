@@ -33,8 +33,6 @@ dependencies {
 # These are the variables we have to pass in to use the module specified in the terragrunt configuration above
 # ---------------------------------------------------------------------------------------------------------------------
 
-github_oauth_token = "92c48a800ad929be3197620c879ef82169cc52fc"
-
 github_owner = "sardegnaturismo"
 
 github_repository = "DO_shiny"

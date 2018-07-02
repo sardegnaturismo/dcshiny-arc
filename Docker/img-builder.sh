@@ -1,4 +1,4 @@
-#!/bin/bash 
+#!/bin/bash -ex
 
 CONFIG_FILENAME="prod.config"
 
@@ -36,8 +36,9 @@ echo
 echo "-r : repository URI"
 echo "-t : container IMAGE_TAG"
 echo "-d : container DOCKER_ROOT"
-echo "-v : version"
 echo "-c : clear build cache before building"
+echo "-C : environment configuration filename"
+echo "-v : version"
 echo "-h : help"
 echo
 
@@ -50,7 +51,7 @@ function Version()
   exit;
 }
 
-while getopts "r:t:d:cvh" Option
+while getopts "r:t:d:c:C:vh" Option
 do
   case $Option in
    r )
@@ -64,6 +65,9 @@ do
        ;;
    c )
        NO_CACHE="--no-cache"
+       ;; 
+   C )
+       CONFIG_FILENAME=$OPTARG
        ;;
    v )
        Version
@@ -107,7 +111,7 @@ then
 fi
 
 
-
+echo $CONFIG_FILENAME
 # Login, build tag and push on ECR registry
 
 

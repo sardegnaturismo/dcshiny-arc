@@ -1,4 +1,12 @@
-cd ./shiny-server/
+#!/bin/bash 
+CONFIG_FILENAME="prod.config"
+
+if [ ! -f ${CONFIG_FILENAME}  ]; then
+    echo "Config file not found, exiting ..."
+    exit;
+else
+    eval $(cat ${CONFIG_FILENAME})
+fi
 
 if [ ! -d DO_shiny ]; then
     git clone https://github.com/pjpalla/DO_shiny.git

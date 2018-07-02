@@ -2,11 +2,11 @@ version: '2'
 services:
   nginx:
     build:
-      context: ./nginx
+      context: ./dc-nginx
     ports:
       - "80:80"
     links:
       - shiny-server
   shiny-server:
     build:
-      context: ./shiny-server
+      context: ./dc-shiny-server
