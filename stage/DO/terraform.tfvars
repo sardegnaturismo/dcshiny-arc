@@ -43,6 +43,10 @@ dashboard_id = "do"
 
 shiny_image_tag = "shiny-server"
 
+nginx_image_tag = "dc-nginx"
+
+worker_image_tag = "dc-worker"
+
 enable_s3_sync_worker = true
 
 alb_listener_rule_offset = 51
