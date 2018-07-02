@@ -47,8 +47,8 @@ enable_s3_sync_worker = true
 
 alb_listener_rule_offset = 51
 
-http_listener_arn = "arn:aws:elasticloadbalancing:eu-west-1:064484720015:listener/app/prod-ras-alb/9d406f2dafd60ac2/1f2730a897383305"
+http_listener_arn = "arn:aws:elasticloadbalancing:eu-west-1:064484720015:listener/app/stage-shinydash-main-alb/cd420b378e446675/685368cd1ea84549"
 
-https_listener_arn = "arn:aws:elasticloadbalancing:eu-west-1:064484720015:listener/app/prod-ras-alb/9d406f2dafd60ac2/952cde701e658d7a"
+https_listener_arn = "arn:aws:elasticloadbalancing:eu-west-1:064484720015:listener/app/stage-shinydash-main-alb/cd420b378e446675/7cb350667ca37707"
 
-service_count = 0
+service_count = 1

@@ -2,13 +2,6 @@
 
 CONFIG_FILENAME="prod.config"
 
-if [ ! -f ${CONFIG_FILENAME}  ]; then
-    echo "Config file not found, exiting ..."
-    exit;
-else
-    eval $(cat ${CONFIG_FILENAME})
-fi
-
 
 # Setting defaults
 
@@ -83,6 +76,17 @@ do
        ;;
   esac
 done
+
+
+# Reads config file
+
+if [ ! -f ${CONFIG_FILENAME}  ]; then
+    echo "Config file not found, exiting ..."
+    exit;
+else
+    eval $(cat ${CONFIG_FILENAME})
+fi
+
 
 # Domain 
 
